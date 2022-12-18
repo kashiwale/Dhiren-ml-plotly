@@ -1,5 +1,6 @@
 import dash as ds
 #import dash_html_components as html
+import dash_core_components as dcc
 import dash_bootstrap_components as dbc
 from dash import html
 
@@ -54,11 +55,27 @@ app.layout = dbc.Tabs([
                         html.A('https://github.com/PacktPublishing/Interactive-Dashboards-and-Data-Apps-with-Plotly-and-Dash',
                                 href='https://github.com/PacktPublishing/Interactive-Dashboards-and-Data-Apps-with-Plotly-and-Dash')])
             ])
-        ], label='Project Info')
-        ])
+        ], label='Project Info'),
+        
 
-                ] ,label='Plotly')
+        dbc.Tab([
+            html.Div([
+                html.H1('World Happiness Dashboard',
+                style={'color': 'blue',
+                'fontSize': '40px'}),
+
+                html.P(['This dashboard shows the happiness score.',
+                    html.Br(), 
+                    html.A('World Happiness Report Data Source', 
+                    href='https://worldhappiness.report/',
+                    target = '_blank')
                 ])
+            ])
+        ], label='World Happiness')
+        ])
+        ],label='Plotly')
+
+                ] )
 
 
 
