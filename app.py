@@ -1,8 +1,11 @@
 import dash
 #import dash_html_components as html
+import dash_bootstrap_components as dbc
 from dash import html
 
-app = dash.Dash(__name__)
+#Themes : "https://dash-bootstrap-components.opensource.faculty.ai/docs/themes/#available-themes"
+#app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
+app = dash.Dash(__name__, external_stylesheets=[dbc.themes.YETI])
 
 app.layout = html.Div([
     html.H1('Poverty And Equity Database',
