@@ -6,7 +6,7 @@ from dash import html
 #Themes : "https://dash-bootstrap-components.opensource.faculty.ai/docs/themes/#available-themes"
 #app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
 app = ds.Dash(__name__, external_stylesheets=[dbc.themes.YETI])
-
+server = app.server
 app.layout = dbc.Tabs([
     dbc.Tab([
         html.Div([
