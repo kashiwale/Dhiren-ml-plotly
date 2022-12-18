@@ -10,7 +10,7 @@ from dash import html
 happiness = pd.read_csv("world_happiness.csv")
 region_options=[{'label':i, 'value':i} for i in happiness['region'].unique()]
 country_options=[{'label':i, 'value':i} for i in happiness['country'].unique()]
-line_fig=px.line(happiness[happiness['country']=='United States'], x='year',y='happiness_score', title='Happiness Score in the USA')
+
 
 
 #Themes : "https://dash-bootstrap-components.opensource.faculty.ai/docs/themes/#available-themes"
@@ -24,15 +24,22 @@ line_fig=px.line(happiness[happiness['country']=='United States'], x='year',y='h
 app = ds.Dash(__name__, external_stylesheets=[dbc.themes.YETI])
 server = app.server
 
-
+data_options = [{'label':'Happiness Score','value':'happiness_score'},
+                {'label':'Happiness Rank','value':'happiness_rank'}]
 @app.callback(
-    Output(component_id='output-text',component_property='children'), 
-    Input(component_id='input-text',component_property='value')
+    Output('happiness-graph','figure'), 
+    Input('country-dropdown','value'), 
+    Input('data-radio','value')
 )
-def update_output_div(input_text):
-    return f'Text: {input_text}'
+def update_output_div(selected_country, selected_data):
+    filtered_happiness = happiness[happiness['country']==selected_country]
+    line_fig=px.line(filtered_happiness, 
+                        x='year',y=selected_data, 
+                        title=f'{selected_data} in {selected_country}')
+    return line_fig
 
-    
+
+
 app.layout = dbc.Tabs([
     dbc.Tab([
         html.Div([
@@ -101,9 +108,13 @@ app.layout = dbc.Tabs([
                 value='North America'),       
                 dcc.Checklist(options=region_options,
                 value=['North America']) ,           
-                dcc.Dropdown(options=country_options,
-                value=['United States'])  ,
-                dcc.Graph(figure=line_fig)         
+                dcc.Dropdown(id='country-dropdown',options=country_options,
+                value='United States')  ,
+                dcc.RadioItems(id='data-radio', 
+                options=data_options,
+                value='happiness_score'),
+                #dcc.Graph(id='happiness-graph',figure=line_fig) 
+                dcc.Graph(id='happiness-graph')         
             ])
         ], label='World Happiness')
         ])
