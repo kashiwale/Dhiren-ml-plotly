@@ -28,6 +28,7 @@ data_options = [{'label':'Happiness Score','value':'happiness_score'},
                 {'label':'Happiness Rank','value':'happiness_rank'}]
 @app.callback(
     Output('happiness-graph','figure'), 
+    Output('average-div','children'),
     Input('country-dropdown','value'), 
     Input('data-radio','value')
 )
@@ -36,7 +37,9 @@ def update_output_div(selected_country, selected_data):
     line_fig=px.line(filtered_happiness, 
                         x='year',y=selected_data, 
                         title=f'{selected_data} in {selected_country}')
-    return line_fig
+    selected_avg = filtered_happiness[selected_data].mean()
+    return line_fig, f'The average {selected_avg} for {selected_country} is ' \
+                    f'{selected_avg}'
 
 
 
@@ -114,7 +117,8 @@ app.layout = dbc.Tabs([
                 options=data_options,
                 value='happiness_score'),
                 #dcc.Graph(id='happiness-graph',figure=line_fig) 
-                dcc.Graph(id='happiness-graph')         
+                dcc.Graph(id='happiness-graph') ,
+                html.Div(id='average-div')
             ])
         ], label='World Happiness')
         ])
