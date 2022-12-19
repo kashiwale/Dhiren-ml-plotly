@@ -2,14 +2,15 @@ import dash as ds
 #import dash_html_components as html
 import dash_core_components as dcc
 import dash_bootstrap_components as dbc
-from dash.dependencies import Input, Output
+from dash.dependencies import Input, Output, State
 import pandas as pd
 import plotly.express as px
 from dash import html
 
+
 happiness = pd.read_csv("world_happiness.csv")
 region_options=[{'label':i, 'value':i} for i in happiness['region'].unique()]
-country_options=[{'label':i, 'value':i} for i in happiness['country'].unique()]
+#country_options=[{'label':i, 'value':i} for i in happiness['country'].unique()]
 
 
 
@@ -26,13 +27,25 @@ server = app.server
 
 data_options = [{'label':'Happiness Score','value':'happiness_score'},
                 {'label':'Happiness Rank','value':'happiness_rank'}]
+
+
+@app.callback(
+    Output('country-dropdown','options'),
+    Output('country-dropdown','value'),
+    Input('region-radio','value')
+)
+def update_dropdown(selected_region):
+    filtered_happiness = happiness[happiness['region']==selected_region]
+    country_options=[{'label':i, 'value':i} for i in filtered_happiness['country'].unique()]
+    return country_options, country_options[0]['value']
 @app.callback(
     Output('happiness-graph','figure'), 
     Output('average-div','children'),
-    Input('country-dropdown','value'), 
-    Input('data-radio','value')
+    Input('submit-button-state','n_clicks'),
+    State('country-dropdown','value'), 
+    State('data-radio','value')
 )
-def update_output_div(selected_country, selected_data):
+def update_graph(button_click,selected_country, selected_data):
     filtered_happiness = happiness[happiness['country']==selected_country]
     line_fig=px.line(filtered_happiness, 
                         x='year',y=selected_data, 
@@ -107,15 +120,19 @@ app.layout = dbc.Tabs([
                     href='https://worldhappiness.report/',
                     target = '_blank')
                 ]),
-                dcc.RadioItems(options=region_options,
+                dcc.RadioItems(id='region-radio',options=region_options,
                 value='North America'),       
                 dcc.Checklist(options=region_options,
                 value=['North America']) ,           
-                dcc.Dropdown(id='country-dropdown',options=country_options,
-                value='United States')  ,
+                dcc.Dropdown(id='country-dropdown'), # options=country_options and value will be over written by region-radio
                 dcc.RadioItems(id='data-radio', 
                 options=data_options,
                 value='happiness_score'),
+                html.Br(),
+                html.Button(id='submit-button-state',
+                n_clicks=0,
+                children='Update the Output'
+                ) ,
                 #dcc.Graph(id='happiness-graph',figure=line_fig) 
                 dcc.Graph(id='happiness-graph') ,
                 html.Div(id='average-div')
