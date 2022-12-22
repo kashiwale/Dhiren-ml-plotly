@@ -1,0 +1,33 @@
+
+  .banner Img{
+    position: relative;
+    float:left;
+    height: 150px;
+  }
+
+  .banner h2{
+    color:#f38c06;
+    padding-top:10px;
+    margin-left:2%;
+    display:inline-block;
+  }
+
+  .banner {
+    height:350px;
+    margin:0px -10px 10px;
+    background-color: hsl(34, 92%, 61%);
+    border-radius:2px;
+  }
+
+  #input-text{
+    color:blueviolet;
+    background-color:aqua 
+  }
+
+  .om{
+    background-color:crimson
+  }
+
+  .region-radio{
+    display: inline
+  }

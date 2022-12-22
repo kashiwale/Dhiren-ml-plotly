@@ -1,3 +1,4 @@
+from pydoc import classname
 import dash as ds
 #import dash_html_components as html
 import dash_core_components as dcc
@@ -9,9 +10,10 @@ from dash import html
 
 
 happiness = pd.read_csv("world_happiness.csv")
+soccer=pd.read_csv('fifa_soccer_players.csv')
 region_options=[{'label':i, 'value':i} for i in happiness['region'].unique()]
 #country_options=[{'label':i, 'value':i} for i in happiness['country'].unique()]
-
+player_name_options=[{'label': i, 'value': i} for i in soccer['long_name'].unique()]
 
 
 #Themes : "https://dash-bootstrap-components.opensource.faculty.ai/docs/themes/#available-themes"
@@ -22,6 +24,7 @@ region_options=[{'label':i, 'value':i} for i in happiness['region'].unique()]
 
 
 
+# app = ds.Dash(__name__, external_stylesheets=[dbc.themes.YETI,'/assets/stylesheet.css'])
 app = ds.Dash(__name__, external_stylesheets=[dbc.themes.YETI])
 server = app.server
 
@@ -59,17 +62,50 @@ def update_graph(button_click,selected_country, selected_data):
 app.layout = dbc.Tabs([
     dbc.Tab([
         html.Div([
-                html.H1('OM Shri Ganeshay Namah',
-                style={'color': 'blue',
-                        'fontSize': '40px'}
+                html.H1('OM Shri Ganeshay Namah', className="om"
+                # ,
+                
+                # style={'color': 'blue',
+                #         'fontSize': '40px'}
                 
                 ),
+                html.Img(src='/assets/DhirenCloseup.png'),
+                html.Br(),
                 dcc.Input(id='input-text',value='Change this text',type='text' ),
                 html.Div(id='output-text')
-        ])
+        ], className="banner")
 
 
     ],label='Dhiren'),
+
+    dbc.Tab([
+        html.Div([
+                html.H1('Soccer Players Dashboard' , 
+                
+                style={'textAlign':'center',
+                        'fontFamily':'fantacy',
+                        'fontSize':50,
+                        'color':'blue'                
+                }),
+                html.P(['Source: ',
+                    html.A('Sofifa',
+                        href='https://sofifa.com',
+                        target='_blank'                   
+                    )               
+                ],
+                style={'border':'solid'}
+                 ),
+        html.Label('Player name: '),
+        dcc.Dropdown(options=player_name_options,
+        value=player_name_options[0]['value'],
+        style={'backgroundColor':'lightblue'}
+        )],
+        style={'padding': 100, 'border':'solid'})
+
+
+    ],label='Soccer'),
+
+
 
 
 
@@ -120,10 +156,11 @@ app.layout = dbc.Tabs([
                     href='https://worldhappiness.report/',
                     target = '_blank')
                 ]),
-                dcc.RadioItems(id='region-radio',options=region_options,
-                value='North America'),       
-                dcc.Checklist(options=region_options,
-                value=['North America']) ,           
+                html.Div([dcc.RadioItems(id='region-radio',options=region_options,
+                value='North America')])
+                ,       
+                #dcc.Checklist(options=region_options,
+                #value=['North America']) ,           
                 dcc.Dropdown(id='country-dropdown'), # options=country_options and value will be over written by region-radio
                 dcc.RadioItems(id='data-radio', 
                 options=data_options,
@@ -143,7 +180,9 @@ app.layout = dbc.Tabs([
 
                 ] )
 
-
+# app.css.append_css({
+#     "external_url":"https://codepen.io/chriddyp/pen/bWLwgP.css"
+# })
 
 if __name__ == '__main__':
     app.run_server(debug=True)
